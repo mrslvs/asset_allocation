@@ -4,8 +4,10 @@ space_down = zeros(1,5);
 space_up = ones(1,5) * 2500000;
 space = [space_down; space_up];
 pop_size = 200;
+cycles = 10000;
 
 population = genrpop(pop_size, space);
+vec_of_best_ones = [25, 15, 10];
 
 %test
 %test_individual = [1, 2500000, 2500002, 2500000, 2500000];
@@ -13,6 +15,31 @@ population = genrpop(pop_size, space);
 %fit = fitness(test_individual);
 %fee = infringement_rate(cond_matrix);
 %F = fit - fee;
+
+%best = [0, 2500000, 2500000, 2500000, 2500000];
+%for i=1:pop_size
+%    population(i,:) = best;
+%end
+
+for i=1:cycles
+    profit(i,:) = fitness_fee(population, pop_size);
+    best_individuals(i) = max(profit(i));
+    
+    temp_best = selbest(population, profit(i), vec_of_best_ones);
+    %population = mutx(
+end
+
+plot(best_individuals);
+
+function F = fitness_fee(population, pop_size)
+%returns row of function values
+    for i=1:pop_size
+        fit = fitness(population(i, :));
+        cond_matrix = conditions(population(i, :));
+        fee = infringement_rate(cond_matrix);
+        F(i) = fit - fee;
+    end
+end
 
 function fee = infringement_rate(cond_matrix)
     if sum(cond_matrix) == 0
