@@ -7,9 +7,21 @@ pop_size = 200;
 
 population = genrpop(pop_size, space);
 
-test_individual = [0, 2500000, 2500000, 2500000, 2500000];
-cond_matrix = conditions(test_individual);
-fit = fitness(test_individual);
+%test
+%test_individual = [1, 2500000, 2500002, 2500000, 2500000];
+%cond_matrix = conditions(test_individual);
+%fit = fitness(test_individual);
+%fee = infringement_rate(cond_matrix);
+%F = fit - fee;
+
+function fee = infringement_rate(cond_matrix)
+    if sum(cond_matrix) == 0
+        fee = 0;
+    else
+        alpha = 100;
+        fee = alpha^(sum(cond_matrix));
+    end
+end
 
 function fit = fitness(i)
     temp1 = 0.04 * i(1);
