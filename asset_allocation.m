@@ -9,6 +9,17 @@ population = genrpop(pop_size, space);
 
 test_individual = [0, 2500000, 2500000, 2500000, 2500000];
 cond_matrix = conditions(test_individual);
+fit = fitness(test_individual);
+
+function fit = fitness(i)
+    temp1 = 0.04 * i(1);
+    temp2 = 0.07 * i(2);
+    temp3 = 0.11 * i(3);
+    temp4 = 0.06 * i(4);
+    temp5 = 0.05 * i(5);
+    
+    fit = temp1 + temp2 + temp3 + temp4 + temp5;
+end
 
 function cond_matrix = conditions(individual)
     cond_matrix = zeros(1,4);
