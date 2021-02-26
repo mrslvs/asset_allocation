@@ -7,6 +7,18 @@ pop_size = 200;
 
 population = genrpop(pop_size, space);
 
+test_individual = [0, 2500000, 2500000, 2500000, 2500000];
+cond_matrix = conditions(test_individual);
+
+function cond_matrix = conditions(individual)
+    cond_matrix = zeros(1,4);
+    
+    cond_matrix(1) = first_cond(individual);
+    cond_matrix(2) = second_cond(individual);
+    cond_matrix(3) = third_cond(individual);
+    cond_matrix(4) = fourth_cond(individual);
+end
+
 function bool = first_cond(individual)
     bool = 0;
     if sum(individual) > 10000000
