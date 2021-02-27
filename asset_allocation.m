@@ -47,19 +47,16 @@ function F = fitness_fee(population, pop_size)
     end
 end
 
+function 
+
 function fee = death_penalty(cond_matrix)
-    if ((cond_matrix(1) == 1) || (sum(cond_matrix) == 4))
-        fee = 10000000;
-    end
+    fee = 10000000;
 end
 
 function fee = infringement_rate(cond_matrix)
-    if sum(cond_matrix) == 0
-        fee = 0;
-    else
-        alpha = 100;
-        fee = alpha^(sum(cond_matrix));
-    end
+%stupnova
+    alpha = 100;
+    fee = alpha^(sum(cond_matrix));
 end
 
 function fit = fitness(i)
