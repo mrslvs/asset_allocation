@@ -27,13 +27,12 @@ for i=1:cycles
     
     temp_best = selbest(population, profit(i, :), vec_of_best_ones);
     
-    %work = selsus(population, profit(i, :), 155);
-    %work = population;
+    work = selsus(population, profit(i, :), 155);
     
-    %work = crossov(population, 1, 0);
-    %work = mutx(population, 0.8, space);
+    work = crossov(work, 1, 0);
+    work = mutx(work, 0.8, space);
     
-    %population = [temp_best; work];
+    population = [temp_best; work];
 end
 
 plot(best_individuals);
