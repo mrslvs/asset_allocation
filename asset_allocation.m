@@ -7,7 +7,7 @@ pop_size = 200;
 cycles = 10000;
 
 population = genrpop(pop_size, space);
-vec_of_best_ones = [10, 15, 20];
+vec_of_best_ones = [20, 15, 10];
 
 %test
 %test_individual = [1, 2500000, 2500002, 2500000, 2500000];
@@ -23,21 +23,17 @@ vec_of_best_ones = [10, 15, 20];
 
 for i=1:cycles
     profit(i,:) = fitness_fee(population, pop_size);
-    best_individuals(i) = max(profit(i));
+    best_individuals(i) = min(profit(i));
     
-    best_ones_selbest_matrix = [zeros(1,(pop_size - length(vec_of_best_ones))), vec_of_best_ones];
-    temp_best = selbest(population, profit(i, :), best_ones_selbest_matrix);
+    temp_best = selbest(population, profit(i, :), vec_of_best_ones);
     
-    %inv_f = invfit(profit(i));
-    %temp_best = selbest(population, inv_f, vec_of_best_ones);
-    
-    work = seltourn(population, profit(i,:), 155);
+    %work = selsus(population, profit(i, :), 155);
     %work = population;
     
-    work = crossov(population, 1, 0);
-    work = mutx(population, 0.8, space);
+    %work = crossov(population, 1, 0);
+    %work = mutx(population, 0.8, space);
     
-    population = [temp_best; work];
+    %population = [temp_best; work];
 end
 
 plot(best_individuals);
@@ -48,7 +44,7 @@ function F = fitness_fee(population, pop_size)
         fit = fitness(population(i, :));
         cond_matrix = conditions(population(i, :));
         fee = infringement_rate(cond_matrix);
-        F(i) = fit - fee;
+        F(i) = (fit + fee) * -1; %F(max) = -F(min)
     end
 end
 
