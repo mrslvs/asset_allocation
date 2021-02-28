@@ -22,7 +22,7 @@ vec_of_best_ones = [20, 15, 10];
 %end
 
 for i=1:cycles
-    profit(i,:) = fitness_fee(population, pop_size);
+    profit(i,:) = fitness_three_fee(population, pop_size);    
     best_individuals(i) = min(profit(i));
     
     temp_best = selbest(population, profit(i, :), vec_of_best_ones);
@@ -47,12 +47,23 @@ function F = fitness_fee(population, pop_size)
     end
 end
 
-function [F,cond_matrix] = fitness_no_fee(population, pop_size)
+function [F] = fitness_three_fee(population, pop_size)
 %returns row of function values
     for i=1:pop_size
         fit = fitness(population(i, :));
         cond_matrix = conditions(population(i, :));
-        F(i) = fit  * -1; %F(max) = -F(min)
+        
+        %penalties
+        fee = 0;
+        if cond_matrix(1) == 1
+            fee = fee + death_penalty();
+        elseif cond_matrix(4) == 1
+            fee = fee + infringement_rate(cond_matrix);
+        else
+            fee = fee + proportionate(population(i,:), cond_matrix);
+        end
+        
+        F(i) = (fit * -1) + fee ; %F(max) = -F(min)
     end
 end
 
@@ -71,12 +82,12 @@ function fee = proportionate(individual, cond_matrix)
     
     if cond_matrix(4) == 1
         x = 0.5 * (i(3) + i(4) - i(1) - i(2) - i(5));
-        fee = fee +x
+        fee = fee + x
     end
 end
 
-function fee = death_penalty(cond_matrix)
-    fee = 10000000;
+function fee = death_penalty()
+    fee = 1000000000;
 end
 
 function fee = infringement_rate(cond_matrix)
