@@ -4,7 +4,7 @@ space_down = zeros(1,5);
 space_up = ones(1,5) * 2500000;
 space = [space_down; space_up];
 pop_size = 200;
-cycles = 10000;
+cycles = 1000;
 
 population = genrpop(pop_size, space);
 vec_of_best_ones = [20, 15, 10];
@@ -47,7 +47,33 @@ function F = fitness_fee(population, pop_size)
     end
 end
 
-function 
+function [F,cond_matrix] = fitness_no_fee(population, pop_size)
+%returns row of function values
+    for i=1:pop_size
+        fit = fitness(population(i, :));
+        cond_matrix = conditions(population(i, :));
+        F(i) = fit  * -1; %F(max) = -F(min)
+    end
+end
+
+function fee = proportionate(individual, cond_matrix)
+%umerna
+    fee = 0;
+    if cond_matrix(2) == 1
+        x = individual(1) + individual(2) - 2500000;
+        fee = fee + x;
+    end
+    
+    if cond_matrix(3) == 1
+        x = individual(5) - individual(4); %x4 must be bigger
+        fee = fee + x;
+    end
+    
+    if cond_matrix(4) == 1
+        x = 0.5 * (i(3) + i(4) - i(1) - i(2) - i(5));
+        fee = fee +x
+    end
+end
 
 function fee = death_penalty(cond_matrix)
     fee = 10000000;
@@ -55,7 +81,7 @@ end
 
 function fee = infringement_rate(cond_matrix)
 %stupnova
-    alpha = 100;
+    alpha = 1000;
     fee = alpha^(sum(cond_matrix));
 end
 
