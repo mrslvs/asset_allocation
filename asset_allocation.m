@@ -27,12 +27,16 @@ for i=1:cycles
     
     temp_best = selbest(population, -profit(i, :), vec_of_best_ones);
     
+    diff = pop_size - sum(vec_of_best_ones);
     %work = selsus(population, profit(i, :), 155);
-    work = seltourn(population, -profit(i, :), 155);
+    work = seltourn(population, -profit(i, :), diff);
     
     %work = mutx(work, 0.8, space);
     work = crossov(work, 1, 0);
-    work = mutx(work, 0.8, space);
+    work = mutx(work, 0.4, space); 
+    
+    amp = ones(1,5) * 10000;
+    work = muta(work, 0.8, amp, space);
     
     population = [temp_best; work];
 end
