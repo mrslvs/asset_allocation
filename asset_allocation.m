@@ -35,6 +35,7 @@ for i=1:cycles
     population = [temp_best; work];
 end
 
+hold on
 plot(best_individuals);
 
 function F = fitness_fee(population, pop_size)
@@ -63,7 +64,7 @@ function [F] = fitness_three_fee(population, pop_size)
             fee = fee + proportionate(population(i,:), cond_matrix);
         end
         
-        F(i) = (fit * -1) + fee ; %F(max) = -F(min)
+        F(i) = (fit * -1) + fee; %F(max) = -F(min)
     end
 end
 
