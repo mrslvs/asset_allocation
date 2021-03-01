@@ -27,8 +27,10 @@ for i=1:cycles
     
     temp_best = selbest(population, profit(i, :), vec_of_best_ones);
     
-    work = selsus(population, profit(i, :), 155);
+    %work = selsus(population, profit(i, :), 155);
+    work = seltourn(population, profit(i, :), 155);
     
+    %work = mutx(work, 0.8, space);
     work = crossov(work, 1, 0);
     work = mutx(work, 0.8, space);
     
@@ -57,11 +59,11 @@ function [F] = fitness_three_fee(population, pop_size)
         %penalties
         fee = 0;
         if cond_matrix(1) == 1 || cond_matrix(2) == 1
-            fee = fee + death_penalty();
-        elseif cond_matrix(4) == 1
-            fee = fee + infringement_rate(cond_matrix);
+            fee = fee + 1000000000000;
+        elseif sum(cond_matrix) == 4
+            fee = fee + (1000 ^ (sum(cond_matrix)));
         else
-            fee = fee + proportionate(population(i,:), cond_matrix);
+            fee = fee + proportionate(population(i, :), cond_matrix);
         end
         
         F(i) = (fit * -1) + fee; %F(max) = -F(min)
@@ -71,10 +73,6 @@ end
 function fee = proportionate(i, cond_matrix)
 %umerna
     fee = 0;
-    if cond_matrix(2) == 1
-        x = (i(1) + i(2) - 2500000) ^2;
-        fee = fee + x;
-    end
     
     if cond_matrix(3) == 1
         x = (i(5) - i(4)) ^2; %x4 must be bigger
