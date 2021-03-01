@@ -11,22 +11,15 @@ vec_of_best_ones = [20, 15, 10];
 
 
 for i=1:cycles
-<<<<<<< HEAD
-    profit(i,:) = fitness_three_fee(population, pop_size);    
-=======
     profit(i,:) = fitness_proportionate(population, pop_size);    
->>>>>>> penalty
     best_individuals(i) = max(profit(i, :));
     
     temp_best = selbest(population, -profit(i, :), vec_of_best_ones);
     
     diff = pop_size - sum(vec_of_best_ones);
     %work = selsus(population, profit(i, :), 155);
-<<<<<<< HEAD
-    work = seltourn(population, -profit(i, :), 155);
-=======
     work = seltourn(population, -profit(i, :), diff);
->>>>>>> penalty
+
     
     %work = mutx(work, 0.8, space);
     work = crossov(work, 1, 0);
@@ -40,26 +33,6 @@ end
 
 hold on
 plot(best_individuals);
-
-function [F] = fitness_three_fee(population, pop_size)
-%returns row of function values
-    for i=1:pop_size
-        fit = fitness(population(i, :));
-        cond_matrix = conditions(population(i, :));
-        
-        %penalties
-        fee = 0;
-        if cond_matrix(1) == 1 || cond_matrix(2) == 1
-            fee = fee + 1000000000000;
-        elseif sum(cond_matrix) == 4
-            fee = fee + (1000 ^ (sum(cond_matrix)));
-        else
-            fee = fee + proportionate(population(i, :), cond_matrix);
-        end
-        
-        F(i) = fit - fee; %F(max) = -F(min)
-    end
-end
 
 function F = fitness_proportionate(population, pop_size)
     for i=1:pop_size
