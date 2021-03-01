@@ -23,7 +23,7 @@ vec_of_best_ones = [20, 15, 10];
 
 for i=1:cycles
     profit(i,:) = fitness_three_fee(population, pop_size);    
-    best_individuals(i) = min(profit(i));
+    best_individuals(i) = min(profit(i, :));
     
     temp_best = selbest(population, profit(i, :), vec_of_best_ones);
     
@@ -56,7 +56,7 @@ function [F] = fitness_three_fee(population, pop_size)
         
         %penalties
         fee = 0;
-        if cond_matrix(1) == 1
+        if cond_matrix(1) == 1 || cond_matrix(2) == 1
             fee = fee + death_penalty();
         elseif cond_matrix(4) == 1
             fee = fee + infringement_rate(cond_matrix);
@@ -68,22 +68,22 @@ function [F] = fitness_three_fee(population, pop_size)
     end
 end
 
-function fee = proportionate(individual, cond_matrix)
+function fee = proportionate(i, cond_matrix)
 %umerna
     fee = 0;
     if cond_matrix(2) == 1
-        x = individual(1) + individual(2) - 2500000;
+        x = (i(1) + i(2) - 2500000) ^2;
         fee = fee + x;
     end
     
     if cond_matrix(3) == 1
-        x = individual(5) - individual(4); %x4 must be bigger
+        x = (i(5) - i(4)) ^2; %x4 must be bigger
         fee = fee + x;
     end
     
     if cond_matrix(4) == 1
-        x = 0.5 * (i(3) + i(4) - i(1) - i(2) - i(5));
-        fee = fee + x
+        x = (0.5 * (i(3) + i(4) - i(1) - i(2) - i(5))) ^2;
+        fee = fee + x;
     end
 end
 
@@ -125,7 +125,7 @@ end
 
 function bool = second_cond(individual)
     bool = 0;
-    if individual(1) + individual(2) > 2500000
+    if (individual(1) + individual(2)) > 2500000
         bool = 1;
     end
 end
