@@ -4,7 +4,7 @@ space_down = zeros(1,5);
 space_up = ones(1,5) * 2500000;
 space = [space_down; space_up];
 pop_size = 200;
-cycles = 1000;
+cycles = 2000;
 
 population = genrpop(pop_size, space);
 vec_of_best_ones = [20, 15, 10];
@@ -24,10 +24,10 @@ for i=1:cycles
     
     %work = mutx(work, 0.8, space);
     work = crossov(work, 1, 0);
-    work = mutx(work, 0.4, space); 
+    work = mutx(work, 0.2, space); 
     
-    amp = ones(1,5) * 10000;
-    work = muta(work, 0.8, amp, space);
+    amp = ones(1,5) * 30000;
+    work = muta(work, 0.9, amp, space);
     
     population = [temp_best; work];
 end
