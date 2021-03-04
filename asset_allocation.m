@@ -11,8 +11,9 @@ vec_of_best_ones = [20, 15, 10];
 
 
 for i=1:cycles
-    profit(i,:) = fitness_proportionate(population, pop_size);
+    %profit(i,:) = fitness_proportionate(population, pop_size);
     %profit(i,:) = fitness_infringement(population, pop_size);
+    profit(i,:) = fitness_penalty_mashup(population, pop_size);
     best_individuals(i) = max(profit(i, :));
     
     temp_best = selbest(population, -profit(i, :), vec_of_best_ones);
@@ -34,6 +35,30 @@ end
 
 hold on
 plot(best_individuals);
+
+function F = fitness_penalty_mashup(population, pop_size)
+    for i=1:pop_size
+        fit = fitness(population(i, :));
+        cond_matrix = conditions(population(i, :));
+        
+        %penalties
+        fee = 0;
+        
+        if sum(cond_matrix) == 4
+            fee = fee + death_penalty();
+        elseif cond_matrix(2) == 1
+            fee = fee + ((population(i,1) + population(i,2)) - 2500000);
+        elseif cond_matrix(3) == 1
+            fee = fee + (population(i,5) - population(i,4));
+        elseif cond_matrix(4) == 1
+            fee = fee + (0.5 * (population(i,3) + population(i,4) - population(i,1) - population(i,2) - population(i,5)));
+        end
+           
+        fee = fee + (10000 ^ sum(cond_matrix));
+        
+        F(i) = fit - fee; %F(max) = -F(min)
+    end
+end
 
 function F = fitness_proportionate(population, pop_size)
     for i=1:pop_size
