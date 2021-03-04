@@ -11,8 +11,8 @@ vec_of_best_ones = [20, 15, 10];
 
 
 for i=1:cycles
-    %profit(i,:) = fitness_proportionate(population, pop_size);
-    profit(i,:) = fitness_infringement(population, pop_size);
+    profit(i,:) = fitness_proportionate(population, pop_size);
+    %profit(i,:) = fitness_infringement(population, pop_size);
     best_individuals(i) = max(profit(i, :));
     
     temp_best = selbest(population, -profit(i, :), vec_of_best_ones);
