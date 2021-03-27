@@ -1,7 +1,7 @@
-%uloha3
-%isid92654
-space_down = zeros(1,5);
-space_up = ones(1,5) * 2500000;
+%task3
+%isid92###
+space_down = zeros(1,5); %lowest value
+space_up = ones(1,5) * 2500000; %highest value
 space = [space_down; space_up];
 pop_size = 200;
 cycles = 2000;
@@ -12,8 +12,8 @@ vec_of_best_ones = [20, 15, 10];
 
 for i=1:cycles
     %profit(i,:) = fitness_proportionate(population, pop_size);
-    %profit(i,:) = fitness_infringement(population, pop_size);
-    profit(i,:) = fitness_penalty_mashup(population, pop_size);
+    profit(i,:) = fitness_infringement(population, pop_size);
+    %profit(i,:) = fitness_penalty_mashup(population, pop_size);
     best_individuals(i) = max(profit(i, :));
     
     temp_best = selbest(population, -profit(i, :), vec_of_best_ones);
