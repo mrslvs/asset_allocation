@@ -3,6 +3,7 @@
 space_down = zeros(1,5); %lowest value
 space_up = ones(1,5) * 2500000; %highest value
 space = [space_down; space_up];
+global pop_size;
 pop_size = 200;
 cycles = 2000;
 
@@ -11,22 +12,20 @@ vec_of_best_ones = [20, 15, 10];
 
 
 for i=1:cycles
+    %choose the penalty method
+    
     %profit(i,:) = fitness_proportionate(population, pop_size);
-    profit(i,:) = fitness_infringement(population, pop_size);
+    profit(i,:) = fitness_infringement(population);
     %profit(i,:) = fitness_penalty_mashup(population, pop_size);
+    
     best_individuals(i) = max(profit(i, :));
-    
     temp_best = selbest(population, -profit(i, :), vec_of_best_ones);
-    
     diff = pop_size - sum(vec_of_best_ones);
-    %work = selsus(population, profit(i, :), 155);
     work = seltourn(population, -profit(i, :), diff);
-
     
-    %work = mutx(work, 0.8, space);
+    %mutate and cross
     work = crossov(work, 1, 0);
     work = mutx(work, 0.2, space); 
-    
     amp = ones(1,5) * 30000;
     work = muta(work, 0.9, amp, space);
     
@@ -36,10 +35,13 @@ end
 hold on
 plot(best_individuals);
 
-function F = fitness_penalty_mashup(population, pop_size)
+function F = fitness_penalty_mashup(pop)
+%using every penalty method
+    global pop_size;
+    
     for i=1:pop_size
-        fit = fitness(population(i, :));
-        cond_matrix = conditions(population(i, :));
+        fit = fitness(pop(i, :));
+        cond_matrix = conditions(pop(i, :));
         
         %penalties
         fee = 0;
@@ -47,11 +49,11 @@ function F = fitness_penalty_mashup(population, pop_size)
         if sum(cond_matrix) == 4
             fee = fee + death_penalty();
         elseif cond_matrix(2) == 1
-            fee = fee + ((population(i,1) + population(i,2)) - 2500000);
+            fee = fee + ((pop(i,1) + pop(i,2)) - 2500000);
         elseif cond_matrix(3) == 1
-            fee = fee + (population(i,5) - population(i,4));
+            fee = fee + (pop(i,5) - pop(i,4));
         elseif cond_matrix(4) == 1
-            fee = fee + (0.5 * (population(i,3) + population(i,4) - population(i,1) - population(i,2) - population(i,5)));
+            fee = fee + (0.5 * (pop(i,3) + pop(i,4) - pop(i,1) - pop(i,2) - pop(i,5)));
         end
            
         fee = fee + (10000 ^ sum(cond_matrix));
@@ -60,30 +62,29 @@ function F = fitness_penalty_mashup(population, pop_size)
     end
 end
 
-function F = fitness_proportionate(population, pop_size)
+function F = fitness_proportionate(population)
+    global pop_size;
     for i=1:pop_size
         fit = fitness(population(i, :));
         cond_matrix = conditions(population(i, :));
         
-        %penalties
-        fee = proportionate(population(i, :), cond_matrix);
-        F(i) = fit - fee; %F(max) = -F(min)
+        fee = proportionate(population(i, :), cond_matrix); %penalty
+        F(i) = fit - fee;
     end
 end
 
-function F = fitness_infringement(population, pop_size)
+function F = fitness_infringement(population)
+    global pop_size;
     for i=1:pop_size
         fit = fitness(population(i, :));
         cond_matrix = conditions(population(i, :));
         
-        %penalties
-        fee = infringement_rate(cond_matrix);
-        F(i) = fit - fee; %F(max) = -F(min)
+        fee = infringement_rate(cond_matrix); %penalty
+        F(i) = fit - fee;
     end
 end
 
 function fee = proportionate(i, cond_matrix)
-%umerna
     fee = 0;
     
     if cond_matrix(1) == 1
@@ -112,12 +113,13 @@ function fee = death_penalty()
 end
 
 function fee = infringement_rate(cond_matrix)
-%stupnova
     alpha = 1000;
     fee = alpha^(sum(cond_matrix));
 end
 
 function fit = fitness(i)
+%argument is individual = money to be invested
+%returns possible earnings for investments in 5 different assets
     temp1 = 0.04 * i(1);
     temp2 = 0.07 * i(2);
     temp3 = 0.11 * i(3);
@@ -128,6 +130,8 @@ function fit = fitness(i)
 end
 
 function cond_matrix = conditions(individual)
+%check conditions for the individual
+%0 = condition met
     cond_matrix = zeros(1,4);
     
     cond_matrix(1) = first_cond(individual);
